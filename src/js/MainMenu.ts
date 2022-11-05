@@ -51,7 +51,7 @@ export default class MainMenuScene extends Phaser.Scene {
             this.scene.start("UI-Scene");
         })
 
-        var inventoryTxt = this.make.text({
+        /*var inventoryTxt = this.make.text({
             x: this.game.canvas.width / 2 - 50,
             y: this.game.canvas.height / 2 - 200,
             text: 'Shop Menu',
@@ -60,28 +60,27 @@ export default class MainMenuScene extends Phaser.Scene {
                 color: "#FF00FF",
                 wordWrap: { width: 270, useAdvancedWrap: true }
             }
-        }).setDepth(100);
+        }).setDepth(100);*/
 
-        var inventoryGroup = this.add.group();
+        //var inventoryGroup = this.add.group();
 
-        var inventoryMenu = this.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, "UIBox");
-        inventoryMenu.setScale(3);
-        inventoryMenu.setScrollFactor(0);
+        var profileIcon = this.add.sprite(this.game.canvas.width - 50, 50, "smallUIBox").setInteractive();
+        profileIcon.setScrollFactor(0);
 
-        
-        var inventoryIcon = this.add.sprite(this.game.canvas.width - 50, 50, "smallUIBox").setInteractive();
-        inventoryIcon.setScrollFactor(0);
-
-        var inventoryIconTxt = this.make.text({
-            x: inventoryIcon.x,
-            y: inventoryIcon.y,
-            text: 'Shop',
+        var profileIconTxt = this.make.text({
+            x: profileIcon.x,
+            y: profileIcon.y,
+            text: 'Profile',
             style: {
                 font: '10px monospace',
                 color: "#FFFFFF",
                 wordWrap: { width: 270, useAdvancedWrap: true }
             }
         }).setDepth(100).setOrigin(0.5);
+
+        /*var inventoryMenu = this.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, "UIBox");
+        inventoryMenu.setScale(3);
+        inventoryMenu.setScrollFactor(0);
 
         var item1 = this.add.sprite(this.game.canvas.width / 2 - 75, this.game.canvas.height / 2 - 100, "smallUIBox");
         item1.setScale(2);
@@ -160,15 +159,17 @@ export default class MainMenuScene extends Phaser.Scene {
 
         item4Purchase.on("pointerdown", () => {
 
-        })
+        })*/
 
-        inventoryIcon.on("pointerdown", () => {
+        profileIcon.on("pointerdown", () => {
             //inventoryMenu.setVisible(!inventoryMenu.visible);
-            inventoryActive = !inventoryActive;
-            inventoryGroup.setVisible(inventoryActive);
+            //inventoryActive = !inventoryActive;
+            //inventoryGroup.setVisible(inventoryActive);
+
+            //Open Profile Here
         })
 
-        inventoryGroup.setVisible(false);
+        //inventoryGroup.setVisible(false);
     }
 
     update(time: number, delta: number): void {

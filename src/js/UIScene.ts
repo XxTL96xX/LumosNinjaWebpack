@@ -1,6 +1,12 @@
 var gameScene;
 var inventoryActive = false;
 
+var inventoryGroup;
+var boughtItemUIGroup;
+var successItemGroup;
+var failItemGroup;
+
+
 export default class UIScene extends Phaser.Scene {
     constructor() {
         //super({ key: 'UI-Scene', active: true });
@@ -39,7 +45,10 @@ export default class UIScene extends Phaser.Scene {
             }
         }).setDepth(100).setOrigin(0.5);
 
-        var inventoryGroup = this.add.group();
+        inventoryGroup = this.add.group();
+        boughtItemUIGroup = this.add.group();
+        successItemGroup = this.add.group();
+        failItemGroup = this.add.group();
 
         var inventoryMenu = this.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, "UIBox");
         inventoryMenu.setScale(3);
@@ -110,19 +119,51 @@ export default class UIScene extends Phaser.Scene {
         inventoryGroup.add(item4Purchase);
 
         item1Purchase.on("pointerdown", () => {
-            this.LoadWeapon(this, "weaponA", "https://www.models-resource.com/resources/big_icons/47/46765.png");
+            boughtItemUIGroup.setVisible(true);
+            //IfSuccess
+            successItemGroup.setVisible(true);
+            successOkButton.on("pointerdown", () => {
+                this.LoadWeapon(this, "weaponA", "https://www.models-resource.com/resources/big_icons/47/46765.png");
+            });
+
+            //If Fail
+            //this.FailPurchaseUI();
         })
 
         item2Purchase.on("pointerdown", () => {
-            this.LoadWeapon(this, "weaponB", "https://ipfs.io/ipfs/bafybeiftozlbi6xzus4cwafyx7fchi4wgqqrzszy3c6edzft5fj7k6fnre/Sprite.png");
+            boughtItemUIGroup.setVisible(true);
+            //IfSuccess
+            successItemGroup.setVisible(true);
+            successOkButton.on("pointerdown", () => {
+                this.LoadWeapon(this, "weaponB", "https://ipfs.io/ipfs/bafybeiftozlbi6xzus4cwafyx7fchi4wgqqrzszy3c6edzft5fj7k6fnre/Sprite.png");
+            });
+
+            //If Fail
+            //this.FailPurchaseUI();
         })
 
         item3Purchase.on("pointerdown", () => {
-            this.LoadWeapon(this, "weaponC", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP59xUwswU7oPpPUZ_CbN1rzneNS8Nj6gIQuMxVIAyaVQyKTu5AF2Pz9T3RT5AuIb3QRc&usqp=CAU");
+            boughtItemUIGroup.setVisible(true);
+            //IfSuccess
+            successItemGroup.setVisible(true);
+            successOkButton.on("pointerdown", () => {
+                this.LoadWeapon(this, "weaponC", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP59xUwswU7oPpPUZ_CbN1rzneNS8Nj6gIQuMxVIAyaVQyKTu5AF2Pz9T3RT5AuIb3QRc&usqp=CAU");
+            });
+
+            //If Fail
+            //this.FailPurchaseUI();
         })
 
         item4Purchase.on("pointerdown", () => {
-            this.LoadWeapon(this, "weaponD", "https://www.tldevtech.com/wp-content/uploads/2020/09/sword_hrey_02.png");
+            boughtItemUIGroup.setVisible(true);
+            //IfSuccess
+            successItemGroup.setVisible(true);
+            successOkButton.on("pointerdown", () => {
+                this.LoadWeapon(this, "weaponD", "https://www.tldevtech.com/wp-content/uploads/2020/09/sword_hrey_02.png");
+            });
+
+            //If Fail
+            //this.FailPurchaseUI();
         })
 
 
@@ -140,10 +181,81 @@ export default class UIScene extends Phaser.Scene {
         })
 
         inventoryGroup.setVisible(false);
+
+        var boughtItemBG = this.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, "UIBox");
+        boughtItemBG.setScale(1.5);
+        boughtItemBG.setScrollFactor(0);
+
+        var successBoughtTxt = this.make.text({
+            x: boughtItemBG.x - 70,
+            y: boughtItemBG.y - 20,
+            text: 'Purchased Successfully!',
+            style: {
+                font: '20px monospace',
+                color: "#000000",
+                wordWrap: { width: 200, useAdvancedWrap: true },
+                align: 'center'
+            }
+        }).setDepth(100).setVisible(false);
+
+        var failedToBuyTxt = this.make.text({
+            x: boughtItemBG.x - 50,
+            y: boughtItemBG.y - 20,
+            text: 'Failed to purchase!',
+            style: {
+                font: '20px monospace',
+                color: "#000000",
+                wordWrap: { width: 200, useAdvancedWrap: true },
+                align: 'center'
+            }
+        }).setDepth(100).setVisible(false);
+
+        var successOkButton = this.add.sprite(boughtItemBG.x, boughtItemBG.y + 75, "okBox").setInteractive();
+        successOkButton.setScale(1);
+        successOkButton.setScrollFactor(0);
+
+        var failedOkButton = this.add.sprite(boughtItemBG.x, boughtItemBG.y + 75, "okBox").setInteractive();
+        failedOkButton.setScale(1);
+        failedOkButton.setScrollFactor(0);
+
+        failedOkButton.on('pointerdown', () => {
+            inventoryGroup.children.each(function (item) {
+                if (item.input) {
+                    item.input.enabled = true;
+                }
+            }, this);
+
+            failItemGroup.setVisible(false);
+        });
+
+        boughtItemUIGroup.add(boughtItemBG);
+        successItemGroup.add(successBoughtTxt);
+        successItemGroup.add(successOkButton);
+        failItemGroup.add(failedToBuyTxt);
+        failItemGroup.add(failedOkButton);
+
+        boughtItemUIGroup.setVisible(false);
+        successItemGroup.setVisible(false);
+        failItemGroup.setVisible(false);
     }
 
     update(time: number, delta: number): void {
 
+    }
+
+    SuccessPurchaseUI(){
+
+    }
+
+    FailPurchaseUI() {
+        //IfFail
+        inventoryGroup.children.each(function (item) {
+            if (item.input) {
+                item.input.enabled = false;
+            }
+        }, this);
+
+        failItemGroup.setVisible(true);
     }
 
     LoadWeapon(theGame, key, url) {
@@ -154,12 +266,14 @@ export default class UIScene extends Phaser.Scene {
             console.log("Set to : " + theGame.scene.get("MainMenu-Scene").data.get("weaponKey"));
             theGame.RestartGameWithWeapon(theGame);
         }, theGame);  // add callback of 'complete' event
-    
+
         theGame.load.start();
     }
 
-    RestartGameWithWeapon(theGame){      
-        theGame.data.set("weaponKey", this.scene.get("Game-Scene").data.get("weaponKey"));  
+    RestartGameWithWeapon(theGame) {
+        inventoryActive = false;
+        
+        theGame.data.set("weaponKey", this.scene.get("Game-Scene").data.get("weaponKey"));
 
         theGame.scene.run("MainMenu-Scene");
         //theGame.scene.start("Game-Scene");

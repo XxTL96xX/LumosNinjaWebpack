@@ -4,6 +4,7 @@ export default class LoaderScene extends Phaser.Scene {
     this.load.image("UIBox", 'assets/ui/UIBox.png');
     this.load.image("choiceBox", 'assets/ui/ChoiceBox.png');
     this.load.image("buyBox", 'assets/ui/BuyBox.png');
+    this.load.image("okBox", 'assets/ui/OkBox.png');
     this.load.image("equipBox", 'assets/ui/EquipBox.png');
     this.load.image('kunai', 'assets/weapons/Kunai.png');
 
