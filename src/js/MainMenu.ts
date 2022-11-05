@@ -1,4 +1,5 @@
 var inventoryActive;
+var startGameTxt;
 
 export default class MainMenuScene extends Phaser.Scene {
     constructor() {
@@ -10,7 +11,19 @@ export default class MainMenuScene extends Phaser.Scene {
     }
 
     create() {
-        var StartGameText = this.make.text({
+        if(this.data.get("weaponKey") == "kunai" || this.data.get("weaponKey") == null)
+            this.data.set("weaponKey", "kunai");
+        else
+            this.data.set("weaponKey", this.data.get("weaponKey"));
+
+        /*if(this.data.get("weaponKey") == weaponKey){
+            this.data.set("weaponKey", weaponKey);
+          }
+          else{
+            this.data.set("weaponKey", this.data.get("weaponKey"))
+          }*/
+
+        startGameTxt = this.make.text({
             x: this.game.canvas.width / 2 + 15,
             y: this.game.canvas.height / 2,
             text: 'Start Game',
@@ -32,8 +45,8 @@ export default class MainMenuScene extends Phaser.Scene {
             }
         }).setOrigin(0.5).setInteractive();*/
 
-        StartGameText.on("pointerdown", () => {
-            this.scene.get("MainMenu-Scene").scene.stop();
+        startGameTxt.on("pointerdown", () => {
+            this.scene.get("MainMenu-Scene").scene.pause();
             this.scene.start("Game-Scene");
             this.scene.start("UI-Scene");
         })
@@ -159,6 +172,7 @@ export default class MainMenuScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number): void {
-
+        startGameTxt.active = true;
+        startGameTxt.setVisible(true);
     }
 }

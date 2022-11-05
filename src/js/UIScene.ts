@@ -110,19 +110,19 @@ export default class UIScene extends Phaser.Scene {
         inventoryGroup.add(item4Purchase);
 
         item1Purchase.on("pointerdown", () => {
-
+            this.LoadWeapon(this, "weaponA", "https://www.models-resource.com/resources/big_icons/47/46765.png");
         })
 
         item2Purchase.on("pointerdown", () => {
-
+            this.LoadWeapon(this, "weaponB", "https://ipfs.io/ipfs/bafybeiftozlbi6xzus4cwafyx7fchi4wgqqrzszy3c6edzft5fj7k6fnre/Sprite.png");
         })
 
         item3Purchase.on("pointerdown", () => {
-
+            this.LoadWeapon(this, "weaponC", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP59xUwswU7oPpPUZ_CbN1rzneNS8Nj6gIQuMxVIAyaVQyKTu5AF2Pz9T3RT5AuIb3QRc&usqp=CAU");
         })
 
         item4Purchase.on("pointerdown", () => {
-
+            this.LoadWeapon(this, "weaponD", "https://www.tldevtech.com/wp-content/uploads/2020/09/sword_hrey_02.png");
         })
 
 
@@ -144,5 +144,28 @@ export default class UIScene extends Phaser.Scene {
 
     update(time: number, delta: number): void {
 
+    }
+
+    LoadWeapon(theGame, key, url) {
+        theGame.load.image(key, url);   // add task
+        // scene.load.image(config); // config: {key, url}
+        theGame.load.once('complete', () => {
+            theGame.scene.get("MainMenu-Scene").data.set("weaponKey", key);
+            console.log("Set to : " + theGame.scene.get("MainMenu-Scene").data.get("weaponKey"));
+            theGame.RestartGameWithWeapon(theGame);
+        }, theGame);  // add callback of 'complete' event
+    
+        theGame.load.start();
+    }
+
+    RestartGameWithWeapon(theGame){      
+        theGame.data.set("weaponKey", this.scene.get("Game-Scene").data.get("weaponKey"));  
+
+        theGame.scene.run("MainMenu-Scene");
+        //theGame.scene.start("Game-Scene");
+        //theGame.scene.start("UI-Scene");
+        theGame.scene.get("Game-Scene").scene.stop();
+        theGame.scene.get("UI-Scene").scene.stop();
+        console.log(theGame.scene.get("MainMenu-Scene").scene);
     }
 }
