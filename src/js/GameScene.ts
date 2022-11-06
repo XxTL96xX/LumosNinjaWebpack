@@ -197,7 +197,8 @@ export default class HelloWorldScene extends Phaser.Scene {
   }
 
   SpawnEnemy(theGame) {
-    var enemy = theGame.add.sprite(1 * 70, 10 * 70, 'PlayerRight').setOrigin(0.5);
+    var enemy = theGame.add.sprite(1 * 70, 10 * 70, 'Enemy').setOrigin(0.5);
+    enemy.setScale(2)
 
     theGame.physics.world.enable(enemy)
 
@@ -210,7 +211,8 @@ export default class HelloWorldScene extends Phaser.Scene {
   }
 
   SpawnEnemy2(theGame) {
-    var enemy = theGame.add.sprite(25 * 70, 10 * 70, 'PlayerLeft').setOrigin(0.5);
+    var enemy = theGame.add.sprite(25 * 70, 10 * 70, 'Enemy').setOrigin(0.5);
+    enemy.setScale(2)
 
     theGame.physics.world.enable(enemy)
 

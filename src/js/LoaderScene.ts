@@ -40,6 +40,8 @@ export default class LoaderScene extends Phaser.Scene {
         frameHeight: 16
     });
 
+    this.load.image("Enemy", "assets/character/Enemy-Left.png");
+
     this.load.image('Layer1BG', 'assets/ui/Layer1Grass.png');
     this.load.image('Layer2BG', 'assets/ui/Layer2Forest.png');
     this.load.image('Layer3BG', 'assets/ui/Layer3Mountain.png');
