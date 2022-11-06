@@ -268,11 +268,11 @@ export default class UIScene extends Phaser.Scene {
         }).setDepth(100).setVisible(false);
 
         var failedToBuyTxt = this.make.text({
-            x: boughtItemBG.x - 50,
-            y: boughtItemBG.y - 20,
-            text: 'Failed to purchase!',
+            x: boughtItemBG.x - 77.5,
+            y: boughtItemBG.y - 45,
+            text: 'Failed to purchase/Already purchased!',
             style: {
-                font: '20px monospace',
+                font: '18px monospace',
                 color: "#000000",
                 wordWrap: { width: 200, useAdvancedWrap: true },
                 align: 'center'
