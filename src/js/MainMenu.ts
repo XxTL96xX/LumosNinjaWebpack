@@ -102,6 +102,9 @@ export default class MainMenuScene extends Phaser.Scene {
             this.scene.start("UI-Scene");
         })
 
+        startGameTxt.input.enabled = false;
+        startGameTxt.alpha = 0.5;
+
         /*var inventoryTxt = this.make.text({
             x: this.game.canvas.width / 2 - 50,
             y: this.game.canvas.height / 2 - 200,
@@ -234,12 +237,19 @@ export default class MainMenuScene extends Phaser.Scene {
             theGame.load.once('complete', () => {
                 this.data.set("weaponKey", key);
                 //console.log("data in MM : " + this.data.get("weaponKey"));
+                this.EnableStartGameText();
             }, theGame);
 
             theGame.load.start();
         }
         else {
             this.data.set("weaponKey", key);
+            this.EnableStartGameText();
         }
+    }
+
+    EnableStartGameText(){
+        startGameTxt.input.enabled = true;
+        startGameTxt.alpha = 1;
     }
 }
