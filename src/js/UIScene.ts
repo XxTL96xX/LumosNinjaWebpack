@@ -318,8 +318,8 @@ export default class UIScene extends Phaser.Scene {
         gameOverBG.setScrollFactor(0);
 
         var gameOverTxt = this.make.text({
-            x: boughtItemBG.x - 45,
-            y: boughtItemBG.y - 20,
+            x: gameOverBG.x - 45,
+            y: gameOverBG.y - 20,
             text: 'Game Over',
             style: {
                 font: '20px monospace',
@@ -329,7 +329,7 @@ export default class UIScene extends Phaser.Scene {
             }
         }).setDepth(100).setVisible(false);
 
-        var gameOverOkButton = this.add.sprite(boughtItemBG.x, boughtItemBG.y + 75, "okBox").setInteractive();
+        var gameOverOkButton = this.add.sprite(gameOverBG.x, gameOverBG.y + 75, "okBox").setInteractive();
         gameOverOkButton.setScale(1);
         gameOverOkButton.setScrollFactor(0);
 

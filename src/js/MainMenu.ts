@@ -14,8 +14,12 @@ export default class MainMenuScene extends Phaser.Scene {
     }
 
     create() {
-        this.data.set("weaponKey", "kunai");
-        
+        //this.data.set("weaponKey", "kunai");
+        if (this.data.get("weaponKey") == "kunai" || this.data.get("weaponKey") == null)
+            this.data.set("weaponKey", "kunai");
+        else
+            this.data.set("weaponKey", this.data.get("weaponKey"));
+
         if (typeof (window as any).ethereum !== "undefined") {
             (window as any).ethereum
                 .request({ method: "eth_requestAccounts" })
@@ -31,11 +35,11 @@ export default class MainMenuScene extends Phaser.Scene {
 
                         socket.on('output_current_weapon', function (msg) {
                             console.log("msg", msg)
-                            
-                            if(msg.data[0] != null){
+
+                            if (msg.data[0] != null) {
                                 this.LoadEquippedWeapon(this, "weaponDefault", msg.data[0])
                             }
-                            else{
+                            else {
                                 this.data.set("weaponKey", "kunai");
                             }
                         });
@@ -49,17 +53,12 @@ export default class MainMenuScene extends Phaser.Scene {
             window.open("https://metamask.io/download/", "_blank");
         }
 
-        /*if (this.data.get("weaponKey") == "kunai" || this.data.get("weaponKey") == null)
+        /*if(this.data.get("weaponKey") == "kunai" || this.data.get("weaponKey") == null){
+            this.LoadEquippedWeapon(this, "weaponDefault", "https://ipfs.io/ipfs/bafybeidax2phyhpknvh6mge3ku5q5bvnze7pubsuuvmcmp2ltgydwrqlxu/Sword.png");
+        }
+        else{
             this.data.set("weaponKey", "kunai");
-        else
-            this.data.set("weaponKey", this.data.get("weaponKey"));*/
-
-            /*if(this.data.get("weaponKey") == "kunai" || this.data.get("weaponKey") == null){
-                this.LoadEquippedWeapon(this, "weaponDefault", "https://ipfs.io/ipfs/bafybeidax2phyhpknvh6mge3ku5q5bvnze7pubsuuvmcmp2ltgydwrqlxu/Sword.png");
-            }
-            else{
-                this.data.set("weaponKey", "kunai");
-            }*/
+        }*/
 
         //BUY WEAPON
         // try{
