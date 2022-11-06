@@ -26,8 +26,8 @@ module.exports = {
         ],
       },
       {
-        test: /\.json$/,
-        loader: "json-loader",
+        // test: /\.json$/,
+        // loader: "json-loader",
       },
     ],
   },
@@ -54,6 +54,7 @@ module.exports = {
   },
   devServer: {
     static: path.resolve(__dirname, "./dist"),
+    port: 3005,
   },
   plugins: [
     new CopyWebpackPlugin({

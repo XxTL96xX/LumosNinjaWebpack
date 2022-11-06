@@ -1,5 +1,50 @@
+import { io } from "socket.io-client";
+
 export default class LoaderScene extends Phaser.Scene {
+  
   public preload() {
+
+    if (typeof (window as any).ethereum !== "undefined") {
+      (window as any).ethereum
+        .request({ method: "eth_requestAccounts" })
+        .then((accounts) => {
+          const account = accounts[0]
+  
+          console.log(account)
+
+          try{
+              var socket = io("http://localhost:3010");
+        
+              socket.emit('get_current_weapon', account);
+        
+              socket.on('output_current_weapon', function(msg) {
+                console.log("msg", msg)
+              });
+        
+            }catch(e){
+                console.log(e)
+            }
+
+        })
+    } else {
+          window.open("https://metamask.io/download/", "_blank");
+    }
+
+    //get user default weapon
+    // try{
+    //   var socket = io("http://localhost:3010");
+
+    //   socket.emit('get_current_weapon', "");
+
+    //   socket.on('output_current_weapon', function(msg) {
+    //     console.log("msg", msg)
+    //   });
+
+    // }catch(e){
+    //     console.log(e)
+    // }
+
+
     this.load.image("smallUIBox", 'assets/ui/SmallUIBox.png');
     this.load.image("UIBox", 'assets/ui/UIBox.png');
     this.load.image("choiceBox", 'assets/ui/ChoiceBox.png');
@@ -27,6 +72,7 @@ export default class LoaderScene extends Phaser.Scene {
   }
 
   public create() {
+    
     this.scene.start("MainMenu-Scene");
   }
 }

@@ -1,0 +1,21 @@
+{
+    "length" : 3,
+    "nft": [
+      {
+        "contractAddress": "0x03e055692e77e56abf7f5570d9c64c194ba15616",
+        "tokenId": "25498"
+      },
+      {
+        "contractAddress": "0x03e055692e77e56abf7f5570d9c64c194ba15616",
+        "tokenId": "25499"
+      },
+      {
+        "contractAddress": "0x03e055692e77e56abf7f5570d9c64c194ba15616",
+        "tokenId": "25500"
+      },
+      {
+        "contractAddress": "0x03e055692e77e56abf7f5570d9c64c194ba15616",
+        "tokenId": "25501"
+      }
+    ]
+}
