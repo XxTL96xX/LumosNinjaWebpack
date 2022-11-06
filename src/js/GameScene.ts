@@ -1,3 +1,6 @@
+import { io } from "socket.io-client";
+import * as weapons from "../data/weapon.json";
+
 var playerSprite;
 
 var ground;
@@ -25,12 +28,12 @@ export default class HelloWorldScene extends Phaser.Scene {
   }
 
   preload() {
-
+        
   }
 
   create() {
     mainMenuScene = this.scene.get("MainMenu-Scene");
-    console.log(mainMenuScene.data.get("weaponKey"));
+    //console.log(mainMenuScene.data.get("weaponKey"));
     //this.data.set("weaponKey", weaponKey);
 
     if(mainMenuScene.data.get("weaponKey") == weaponKey){
@@ -40,7 +43,7 @@ export default class HelloWorldScene extends Phaser.Scene {
       this.data.set("weaponKey", mainMenuScene.data.get("weaponKey"));
     }
 
-    console.log("Game Data : " + this.data.get("weaponKey"));
+    //console.log("Game Data : " + this.data.get("weaponKey"));
 
     bulletGroup = this.add.group();
 
@@ -160,7 +163,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 
     keyObjSpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE, false);
     keyObjSpace.on('down', function (event) {
-      console.log(playerSprite.texture.key)
+      //console.log(playerSprite.texture.key)
       if (playerSprite.texture.key == "PlayerLeft") {
         bullet = this.add.sprite(playerSprite.x - 30, playerSprite.y, this.data.get("weaponKey")).setOrigin(0.5);
         this.physics.world.enable(bullet)

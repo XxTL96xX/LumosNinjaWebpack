@@ -10,58 +10,72 @@ export default class MainMenuScene extends Phaser.Scene {
     }
 
     preload() {
-        //WEAPON LIST FOR SHOP
-        /**
-         * SAMPLE DATA THAT WILL BE RECEIVED FROM SOCKET
-         * 
-         * 
-         * 
-         *{
-            "func": "get_shop_weapon_list",
-            "data": [
-                "https://ipfs.io/ipfs/bafybeih2sc4vgcjc6nyi5p3arnadxuav34rsnogkagvyec7p247cova3uq/Axe.png",
-                "https://ipfs.io/ipfs/bafybeie6t7nqxmhzkmjpksuxgtxhqx272glvxgv6n4gtr7j4kdmh5fcxea/Kunai.png",
-                "https://ipfs.io/ipfs/bafybeidax2phyhpknvh6mge3ku5q5bvnze7pubsuuvmcmp2ltgydwrqlxu/Sword.png",
-                "https://ipfs.io/ipfs/bafybeicfup4hp6acdlp7tst6i7jx3626t7gnqsbfi76smo6aunt7srnpje/Hammer.png"
-            ]
-        }  
-        */
-        
-        try{
-            var socket = io("http://localhost:3010");
-    
-            socket.emit('get_shop_weapon_list', weapons);
-    
-            socket.on('output_weapon_shop', function(msg) {
-                console.log("msg", msg)
-            });
-    
-        }catch(e){
-            console.log(e)
-        }
+
     }
 
     create() {
-        if(this.data.get("weaponKey") == "kunai" || this.data.get("weaponKey") == null)
+        this.data.set("weaponKey", "kunai");
+        
+        if (typeof (window as any).ethereum !== "undefined") {
+            (window as any).ethereum
+                .request({ method: "eth_requestAccounts" })
+                .then((accounts) => {
+                    const account = accounts[0]
+
+                    console.log(account)
+
+                    try {
+                        var socket = io("http://localhost:3010");
+
+                        socket.emit('get_current_weapon', account);
+
+                        socket.on('output_current_weapon', function (msg) {
+                            console.log("msg", msg)
+                            
+                            if(msg.data[0] != null){
+                                this.LoadEquippedWeapon(this, "weaponDefault", msg.data[0])
+                            }
+                            else{
+                                this.data.set("weaponKey", "kunai");
+                            }
+                        });
+
+                    } catch (e) {
+                        console.log(e)
+                    }
+
+                })
+        } else {
+            window.open("https://metamask.io/download/", "_blank");
+        }
+
+        /*if (this.data.get("weaponKey") == "kunai" || this.data.get("weaponKey") == null)
             this.data.set("weaponKey", "kunai");
         else
-            this.data.set("weaponKey", this.data.get("weaponKey"));
-            
+            this.data.set("weaponKey", this.data.get("weaponKey"));*/
+
+            /*if(this.data.get("weaponKey") == "kunai" || this.data.get("weaponKey") == null){
+                this.LoadEquippedWeapon(this, "weaponDefault", "https://ipfs.io/ipfs/bafybeidax2phyhpknvh6mge3ku5q5bvnze7pubsuuvmcmp2ltgydwrqlxu/Sword.png");
+            }
+            else{
+                this.data.set("weaponKey", "kunai");
+            }*/
+
         //BUY WEAPON
         // try{
         //     var socket = io("http://localhost:3010");
-    
+
         //     socket.emit('buy_weapon', walletAddress, weapon_url_image);
-    
+
         //     // socket.on('output_weapon_shop', function(msg) {
         //     // console.log("msg", msg)
         //     // });
-    
+
         // }catch(e){
         //     console.log(e)
         // }
 
-        var StartGameText = this.make.text({
+        startGameTxt = this.make.text({
             x: this.game.canvas.width / 2 + 15,
             y: this.game.canvas.height / 2,
             text: 'Start Game',
@@ -213,5 +227,20 @@ export default class MainMenuScene extends Phaser.Scene {
     update(time: number, delta: number): void {
         startGameTxt.active = true;
         startGameTxt.setVisible(true);
+    }
+
+    LoadEquippedWeapon(theGame, key, url) {
+        if (!theGame.textures.exists(key)) {
+            theGame.load.image(key, url);
+            theGame.load.once('complete', () => {
+                this.data.set("weaponKey", key);
+                //console.log("data in MM : " + this.data.get("weaponKey"));
+            }, theGame);
+
+            theGame.load.start();
+        }
+        else {
+            this.data.set("weaponKey", key);
+        }
     }
 }

@@ -1,3 +1,6 @@
+import { io } from "socket.io-client";
+import * as weapons from "../data/weapon.json";
+
 var gameScene;
 var inventoryActive = false;
 
@@ -5,6 +8,15 @@ var inventoryGroup;
 var boughtItemUIGroup;
 var successItemGroup;
 var failItemGroup;
+var item1Group;
+var item2Group;
+var item3Group;
+var item4Group;
+
+var allItemGroups = [];
+var shouldActivateItems = [false, false, false, false];
+
+var weaponKeyNames = ["weaponA", "weaponB", "weaponC", "weaponD"];
 
 
 export default class UIScene extends Phaser.Scene {
@@ -18,6 +30,39 @@ export default class UIScene extends Phaser.Scene {
     }
 
     create() {
+        //WEAPON LIST FOR SHOP
+        /**
+         * SAMPLE DATA THAT WILL BE RECEIVED FROM SOCKET
+         * 
+         * 
+         * 
+         *{
+            "func": "get_shop_weapon_list",
+            "data": [
+                "https://ipfs.io/ipfs/bafybeih2sc4vgcjc6nyi5p3arnadxuav34rsnogkagvyec7p247cova3uq/Axe.png",
+                "https://ipfs.io/ipfs/bafybeie6t7nqxmhzkmjpksuxgtxhqx272glvxgv6n4gtr7j4kdmh5fcxea/Kunai.png",
+                "https://ipfs.io/ipfs/bafybeidax2phyhpknvh6mge3ku5q5bvnze7pubsuuvmcmp2ltgydwrqlxu/Sword.png",
+                "https://ipfs.io/ipfs/bafybeicfup4hp6acdlp7tst6i7jx3626t7gnqsbfi76smo6aunt7srnpje/Hammer.png"
+            ]
+        }  
+        */
+
+        try {
+            var socket = io("http://localhost:3010");
+
+            socket.emit('get_shop_weapon_list', weapons);
+
+            socket.on('output_weapon_shop', function (msg) {
+                console.log("msg", msg)
+                for (var i = 0; i < msg.data.length; i++) {
+                    this.LoadShopWeapons(this, weaponKeyNames[i], msg.data[i], i);
+                }
+            });
+
+        } catch (e) {
+            console.log(e)
+        }
+
         gameScene = this.scene.get('Game-Scene');
 
         var inventoryTxt = this.make.text({
@@ -49,6 +94,10 @@ export default class UIScene extends Phaser.Scene {
         boughtItemUIGroup = this.add.group();
         successItemGroup = this.add.group();
         failItemGroup = this.add.group();
+        item1Group = this.add.group();
+        item2Group = this.add.group();
+        item3Group = this.add.group();
+        item4Group = this.add.group();
 
         var inventoryMenu = this.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, "UIBox");
         inventoryMenu.setScale(3);
@@ -102,21 +151,32 @@ export default class UIScene extends Phaser.Scene {
         var item4Purchase = this.add.sprite(item4.x, item4.y + 50, "buyBox").setInteractive();
         item4Purchase.setScrollFactor(0);
 
+        item1Group.add(item1);
+        item1Group.add(item1Image);
+        item1Group.add(item1Purchase);
+        item2Group.add(item2);
+        item2Group.add(item2Image);
+        item2Group.add(item2Purchase);
+        item3Group.add(item3);
+        item3Group.add(item3Image);
+        item3Group.add(item3Purchase);
+        item4Group.add(item4);
+        item4Group.add(item4Image);
+        item4Group.add(item4Purchase);
+
+        item1Group.setVisible(false);
+        item2Group.setVisible(false);
+        item3Group.setVisible(false);
+        item4Group.setVisible(false);
+
+        allItemGroups.push(item1Group, item2Group, item3Group, item4Group);
 
         inventoryGroup.add(inventoryTxt);
         inventoryGroup.add(inventoryMenu);
-        inventoryGroup.add(item1);
-        inventoryGroup.add(item1Image);
-        inventoryGroup.add(item1Purchase);
-        inventoryGroup.add(item2);
-        inventoryGroup.add(item2Image);
-        inventoryGroup.add(item2Purchase);
-        inventoryGroup.add(item3);
-        inventoryGroup.add(item3Image);
-        inventoryGroup.add(item3Purchase);
-        inventoryGroup.add(item4);
-        inventoryGroup.add(item4Image);
-        inventoryGroup.add(item4Purchase);
+        inventoryGroup.add(item1Group);
+        inventoryGroup.add(item2Group);
+        inventoryGroup.add(item3Group);
+        inventoryGroup.add(item4Group);
 
         item1Purchase.on("pointerdown", () => {
             boughtItemUIGroup.setVisible(true);
@@ -171,6 +231,15 @@ export default class UIScene extends Phaser.Scene {
             //inventoryMenu.setVisible(!inventoryMenu.visible);
             inventoryActive = !inventoryActive;
             inventoryGroup.setVisible(inventoryActive);
+
+            for (var i = 0; i < shouldActivateItems.length; i++) {
+                if (inventoryActive) {
+                    allItemGroups[i].setVisible(shouldActivateItems[i]);
+                }
+                else {
+                    allItemGroups[i].setVisible(false);
+                }
+            }
 
             if (inventoryActive) {
                 gameScene.scene.pause();
@@ -237,13 +306,18 @@ export default class UIScene extends Phaser.Scene {
         boughtItemUIGroup.setVisible(false);
         successItemGroup.setVisible(false);
         failItemGroup.setVisible(false);
+
+        //this.LoadShopWeapons(this, weaponKeyNames[0], "https://ipfs.io/ipfs/bafybeih2sc4vgcjc6nyi5p3arnadxuav34rsnogkagvyec7p247cova3uq/Axe.png", 0);
+        //this.LoadShopWeapons(this, weaponKeyNames[1], "https://ipfs.io/ipfs/bafybeicfup4hp6acdlp7tst6i7jx3626t7gnqsbfi76smo6aunt7srnpje/Hammer.png", 1);
+        //console.log(allItemGroups);
+        //allItemGroups[1].setVisible(true);
     }
 
     update(time: number, delta: number): void {
 
     }
 
-    SuccessPurchaseUI(){
+    SuccessPurchaseUI() {
 
     }
 
@@ -258,21 +332,48 @@ export default class UIScene extends Phaser.Scene {
         failItemGroup.setVisible(true);
     }
 
-    LoadWeapon(theGame, key, url) {
-        theGame.load.image(key, url);   // add task
-        // scene.load.image(config); // config: {key, url}
-        theGame.load.once('complete', () => {
-            theGame.scene.get("MainMenu-Scene").data.set("weaponKey", key);
-            console.log("Set to : " + theGame.scene.get("MainMenu-Scene").data.get("weaponKey"));
-            theGame.RestartGameWithWeapon(theGame);
-        }, theGame);  // add callback of 'complete' event
+    LoadShopWeapons(theGame, key, url, index) {
+        if (!theGame.textures.exists(key)) {
+            theGame.load.image(key, url);
+            theGame.load.once('complete', () => {
+                //allItemGroups[index].setVisible(true);
+                allItemGroups[index].children.entries[1].setTexture(key);
+                shouldActivateItems[index] = true;
+            }, theGame);
 
-        theGame.load.start();
+            theGame.load.start();
+        }
+        else {
+            //allItemGroups[index].setVisible(true);
+            shouldActivateItems[index] = true;
+            allItemGroups[index].children.entries[1].setTexture(key);
+            //console.log(allItemGroups[index].children.entries[1].texture.key);
+        }
+    }
+
+    LoadWeapon(theGame, key, url) {
+        if (!theGame.textures.exists(key)) {
+            theGame.load.image(key, url);
+            theGame.load.once('complete', () => {
+                theGame.scene.get("MainMenu-Scene").data.set("weaponKey", key);
+                //console.log("Set to : " + theGame.scene.get("MainMenu-Scene").data.get("weaponKey"));
+                theGame.RestartGameWithWeapon(theGame);
+            }, theGame);
+
+            theGame.load.start();
+        }
+        else {
+            theGame.scene.get("MainMenu-Scene").data.set("weaponKey", key);
+            //console.log("Set to : " + theGame.scene.get("MainMenu-Scene").data.get("weaponKey"));
+            theGame.RestartGameWithWeapon(theGame);
+        }
     }
 
     RestartGameWithWeapon(theGame) {
         inventoryActive = false;
-        
+        allItemGroups = [];
+        shouldActivateItems = [false, false, false, false];
+
         theGame.data.set("weaponKey", this.scene.get("Game-Scene").data.get("weaponKey"));
 
         theGame.scene.run("MainMenu-Scene");
@@ -280,6 +381,6 @@ export default class UIScene extends Phaser.Scene {
         //theGame.scene.start("UI-Scene");
         theGame.scene.get("Game-Scene").scene.stop();
         theGame.scene.get("UI-Scene").scene.stop();
-        console.log(theGame.scene.get("MainMenu-Scene").scene);
+        //console.log(theGame.scene.get("MainMenu-Scene").scene);
     }
 }
