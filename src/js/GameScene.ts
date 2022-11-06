@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 import * as weapons from "../data/weapon.json";
 
+var thisScene;
 var playerSprite;
 
 var ground;
@@ -35,6 +36,7 @@ export default class HelloWorldScene extends Phaser.Scene {
     mainMenuScene = this.scene.get("MainMenu-Scene");
     //console.log(mainMenuScene.data.get("weaponKey"));
     //this.data.set("weaponKey", weaponKey);
+    thisScene = this;
 
     if(mainMenuScene.data.get("weaponKey") == weaponKey){
       this.data.set("weaponKey", weaponKey);
@@ -207,6 +209,7 @@ export default class HelloWorldScene extends Phaser.Scene {
     allEnemy.push(enemy);
 
     var enemyCollider = this.physics.add.overlap(enemy, bulletGroup, this.OnBulletCollide, null, this);
+    var enemyPlayerCollider = this.physics.add.overlap(enemy, playerSprite, this.OnPlayerCollide, null, this);
     this.physics.add.collider(enemy, ground, null, null, this);
   }
 
@@ -221,6 +224,7 @@ export default class HelloWorldScene extends Phaser.Scene {
     allEnemy.push(enemy);
 
     var enemyCollider = this.physics.add.overlap(enemy, bulletGroup, this.OnBulletCollide, null, this);
+    var enemyPlayerCollider = this.physics.add.overlap(enemy, playerSprite, this.OnPlayerCollide, null, this);
     this.physics.add.collider(enemy, ground, null, null, this);
   }
 
@@ -229,6 +233,11 @@ export default class HelloWorldScene extends Phaser.Scene {
     body1.destroy();
     bulletGroup.remove(body2);
     body2.destroy();
+  }
+
+  OnPlayerCollide(body1, body2) {
+    thisScene.scene.get("UI-Scene").data.get("GameOverMenu").setVisible(true);
+    thisScene.scene.pause();
   }
 
   update(time: number, delta: number): void {

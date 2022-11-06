@@ -8,6 +8,8 @@ var inventoryGroup;
 var boughtItemUIGroup;
 var successItemGroup;
 var failItemGroup;
+var gameOverGroup;
+
 var item1Group;
 var item2Group;
 var item3Group;
@@ -94,6 +96,7 @@ export default class UIScene extends Phaser.Scene {
         boughtItemUIGroup = this.add.group();
         successItemGroup = this.add.group();
         failItemGroup = this.add.group();
+        gameOverGroup = this.add.group();
         item1Group = this.add.group();
         item2Group = this.add.group();
         item3Group = this.add.group();
@@ -307,6 +310,40 @@ export default class UIScene extends Phaser.Scene {
         successItemGroup.setVisible(false);
         failItemGroup.setVisible(false);
 
+        
+
+        //======GAMEOVER=====
+        var gameOverBG = this.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, "UIBox");
+        gameOverBG.setScale(1.5);
+        gameOverBG.setScrollFactor(0);
+
+        var gameOverTxt = this.make.text({
+            x: boughtItemBG.x - 45,
+            y: boughtItemBG.y - 20,
+            text: 'Game Over',
+            style: {
+                font: '20px monospace',
+                color: "#000000",
+                wordWrap: { width: 200, useAdvancedWrap: true },
+                align: 'center'
+            }
+        }).setDepth(100).setVisible(false);
+
+        var gameOverOkButton = this.add.sprite(boughtItemBG.x, boughtItemBG.y + 75, "okBox").setInteractive();
+        gameOverOkButton.setScale(1);
+        gameOverOkButton.setScrollFactor(0);
+
+        gameOverOkButton.on("pointerdown", () =>{
+            this.RestartGame(this);
+        })
+
+        gameOverGroup.add(gameOverBG);
+        gameOverGroup.add(gameOverTxt);
+        gameOverGroup.add(gameOverOkButton);
+        gameOverGroup.setVisible(false);
+
+        this.data.set("GameOverMenu", gameOverGroup);
+
         //this.LoadShopWeapons(this, weaponKeyNames[0], "https://ipfs.io/ipfs/bafybeih2sc4vgcjc6nyi5p3arnadxuav34rsnogkagvyec7p247cova3uq/Axe.png", 0);
         //this.LoadShopWeapons(this, weaponKeyNames[1], "https://ipfs.io/ipfs/bafybeicfup4hp6acdlp7tst6i7jx3626t7gnqsbfi76smo6aunt7srnpje/Hammer.png", 1);
         //console.log(allItemGroups);
@@ -382,5 +419,17 @@ export default class UIScene extends Phaser.Scene {
         theGame.scene.get("Game-Scene").scene.stop();
         theGame.scene.get("UI-Scene").scene.stop();
         //console.log(theGame.scene.get("MainMenu-Scene").scene);
+    }
+
+    RestartGame(theGame){
+        inventoryActive = false;
+        allItemGroups = [];
+        shouldActivateItems = [false, false, false, false];
+
+        theGame.data.set("weaponKey", this.scene.get("Game-Scene").data.get("weaponKey"));
+
+        theGame.scene.run("MainMenu-Scene");
+        theGame.scene.get("Game-Scene").scene.stop();
+        theGame.scene.get("UI-Scene").scene.stop();
     }
 }
